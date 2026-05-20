@@ -1,81 +1,40 @@
-import React, { memo } from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+// StatCard — KPI summary widget
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { Colors, Spacing, FontSize, FontWeight, BorderRadius, Shadow } from '@/constants/theme';
+import { Colors, FontSize, FontWeight, BorderRadius, Spacing, Shadow } from '@/constants/theme';
 
-interface StatCardProps {
+interface Props {
   label: string;
   value: string | number;
-  icon: keyof typeof MaterialIcons.glyphMap;
+  icon: string;
   color?: string;
-  bgColor?: string;
-  subtitle?: string;
-  onPress?: () => void;
-  small?: boolean;
+  sub?: string;
 }
 
-export const StatCard = memo(function StatCard({
-  label,
-  value,
-  icon,
-  color = Colors.accent,
-  bgColor = Colors.card,
-  subtitle,
-  onPress,
-  small = false,
-}: StatCardProps) {
+export function StatCard({ label, value, icon, color = Colors.primary, sub }: Props) {
   return (
-    <Pressable
-      onPress={onPress}
-      style={({ pressed }) => [styles.card, { backgroundColor: bgColor, opacity: pressed ? 0.88 : 1 }]}
-    >
-      <View style={[styles.iconCircle, { backgroundColor: color + '20' }]}>
-        <MaterialIcons name={icon} size={small ? 18 : 22} color={color} />
+    <View style={[styles.card, { borderTopColor: color }]}>
+      <View style={[styles.iconWrap, { backgroundColor: color + '18' }]}>
+        <MaterialIcons name={icon as any} size={20} color={color} />
       </View>
-      <Text style={[styles.value, small && styles.valueSmall]}>{value}</Text>
-      <Text style={styles.label} numberOfLines={1}>{label}</Text>
-      {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
-    </Pressable>
+      <Text style={styles.value}>{value}</Text>
+      <Text style={styles.label}>{label}</Text>
+      {sub ? <Text style={styles.sub}>{sub}</Text> : null}
+    </View>
   );
-});
+}
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: BorderRadius.md,
-    padding: Spacing.md,
-    alignItems: 'flex-start',
-    ...Shadow.card,
-    borderWidth: 1,
-    borderColor: Colors.borderCard,
+    flex: 1, minWidth: '44%',
+    backgroundColor: Colors.cardBg, borderRadius: BorderRadius.md,
+    padding: Spacing.md, gap: Spacing.xs,
+    borderTopWidth: 3,
+    ...Shadow.card, borderWidth: 1, borderColor: Colors.border,
   },
-  iconCircle: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: Spacing.sm,
-  },
-  value: {
-    fontSize: FontSize.xl,
-    fontWeight: FontWeight.bold,
-    color: Colors.textPrimary,
-    includeFontPadding: false,
-  },
-  valueSmall: {
-    fontSize: FontSize.lg,
-  },
-  label: {
-    fontSize: FontSize.xs,
-    color: Colors.textSecondary,
-    fontWeight: FontWeight.medium,
-    marginTop: 2,
-    includeFontPadding: false,
-  },
-  subtitle: {
-    fontSize: FontSize.xs,
-    color: Colors.textMuted,
-    marginTop: 2,
-    includeFontPadding: false,
-  },
+  iconWrap: { width: 38, height: 38, borderRadius: 19, alignItems: 'center', justifyContent: 'center' },
+  value: { fontSize: FontSize.xl, fontWeight: FontWeight.bold, color: Colors.textPrimary, includeFontPadding: false },
+  label: { fontSize: FontSize.xs, color: Colors.textSecondary, includeFontPadding: false },
+  sub: { fontSize: FontSize.xs, color: Colors.textMuted, includeFontPadding: false },
 });

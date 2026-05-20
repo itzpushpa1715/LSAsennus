@@ -1,52 +1,35 @@
-import React, { memo } from 'react';
+// StatusBadge — semantic status chip
+import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Colors, FontSize, FontWeight, BorderRadius, Spacing } from '@/constants/theme';
 
-type BadgeVariant =
-  | 'success' | 'warning' | 'error' | 'info'
-  | 'morning' | 'evening' | 'night' | 'overtime' | 'weekend'
-  | 'active' | 'inactive' | 'on-leave'
-  | 'present' | 'absent' | 'late'
-  | 'valid' | 'expiring' | 'expired'
-  | 'pending' | 'approved' | 'rejected'
-  | 'scheduled' | 'completed' | 'missed';
+type Variant = 'active' | 'inactive' | 'pending' | 'approved' | 'rejected' | 'late' | 'present' | 'absent' | 'morning' | 'evening' | 'night' | 'overtime' | string;
 
-const VARIANT_STYLES: Record<BadgeVariant, { bg: string; text: string }> = {
-  success:   { bg: Colors.successLight,  text: Colors.success },
-  warning:   { bg: Colors.warningLight,  text: '#E65100' },
-  error:     { bg: Colors.errorLight,    text: Colors.error },
-  info:      { bg: Colors.infoLight,     text: '#1565C0' },
-  morning:   { bg: '#E3F2FD',            text: Colors.morningShift },
-  evening:   { bg: '#FFF3E0',            text: Colors.eveningShift },
-  night:     { bg: '#EDE7F6',            text: Colors.nightShift },
-  overtime:  { bg: '#FFEBEE',            text: Colors.overtimeShift },
-  weekend:   { bg: '#F3E5F5',            text: '#7B1FA2' },
-  active:    { bg: Colors.successLight,  text: Colors.success },
-  inactive:  { bg: '#F5F5F5',            text: Colors.textMuted },
-  'on-leave':{ bg: Colors.warningLight,  text: '#E65100' },
-  present:   { bg: Colors.successLight,  text: Colors.success },
-  absent:    { bg: Colors.errorLight,    text: Colors.error },
-  late:      { bg: Colors.warningLight,  text: '#F57F17' },
-  valid:     { bg: Colors.successLight,  text: Colors.success },
-  expiring:  { bg: Colors.warningLight,  text: '#E65100' },
-  expired:   { bg: Colors.errorLight,    text: Colors.error },
-  pending:   { bg: Colors.infoLight,     text: '#1565C0' },
-  approved:  { bg: Colors.successLight,  text: Colors.success },
-  rejected:  { bg: Colors.errorLight,    text: Colors.error },
-  scheduled: { bg: Colors.infoLight,     text: '#1565C0' },
-  completed: { bg: Colors.successLight,  text: Colors.success },
-  missed:    { bg: Colors.errorLight,    text: Colors.error },
+const VARIANT_STYLES: Record<string, { bg: string; text: string; label?: string }> = {
+  active:   { bg: Colors.successLight, text: Colors.success },
+  present:  { bg: Colors.successLight, text: Colors.success },
+  approved: { bg: Colors.successLight, text: Colors.success },
+  morning:  { bg: Colors.shiftMorning + '20', text: Colors.shiftMorning },
+  inactive: { bg: Colors.surfaceAlt, text: Colors.textSecondary },
+  absent:   { bg: Colors.dangerLight, text: Colors.danger },
+  rejected: { bg: Colors.dangerLight, text: Colors.danger },
+  pending:  { bg: Colors.warningLight, text: Colors.warning },
+  late:     { bg: Colors.warningLight, text: Colors.warning },
+  evening:  { bg: Colors.shiftEvening + '20', text: Colors.shiftEvening },
+  night:    { bg: Colors.shiftNight + '20', text: Colors.shiftNight },
+  overtime: { bg: Colors.shiftOvertime + '20', text: Colors.shiftOvertime },
 };
 
-interface StatusBadgeProps {
-  variant: BadgeVariant;
+interface Props {
+  variant: Variant;
   label?: string;
   size?: 'sm' | 'md';
 }
 
-export const StatusBadge = memo(function StatusBadge({ variant, label, size = 'md' }: StatusBadgeProps) {
-  const style = VARIANT_STYLES[variant] || VARIANT_STYLES.info;
-  const displayLabel = label || variant.charAt(0).toUpperCase() + variant.slice(1).replace('-', ' ');
+export function StatusBadge({ variant, label, size = 'md' }: Props) {
+  const style = VARIANT_STYLES[variant] || { bg: Colors.surfaceAlt, text: Colors.textSecondary };
+  const displayLabel = label || variant.charAt(0).toUpperCase() + variant.slice(1);
+
   return (
     <View style={[styles.badge, { backgroundColor: style.bg }, size === 'sm' && styles.badgeSm]}>
       <Text style={[styles.text, { color: style.text }, size === 'sm' && styles.textSm]}>
@@ -54,25 +37,11 @@ export const StatusBadge = memo(function StatusBadge({ variant, label, size = 'm
       </Text>
     </View>
   );
-});
+}
 
 const styles = StyleSheet.create({
-  badge: {
-    paddingHorizontal: Spacing.sm,
-    paddingVertical: 3,
-    borderRadius: BorderRadius.full,
-    alignSelf: 'flex-start',
-  },
-  badgeSm: {
-    paddingHorizontal: Spacing.xs + 2,
-    paddingVertical: 2,
-  },
-  text: {
-    fontSize: FontSize.xs,
-    fontWeight: FontWeight.semibold,
-    includeFontPadding: false,
-  },
-  textSm: {
-    fontSize: 10,
-  },
+  badge: { borderRadius: BorderRadius.full, paddingHorizontal: Spacing.sm, paddingVertical: 4 },
+  badgeSm: { paddingHorizontal: Spacing.xs + 2, paddingVertical: 2 },
+  text: { fontSize: FontSize.sm, fontWeight: FontWeight.semibold, textTransform: 'capitalize', includeFontPadding: false },
+  textSm: { fontSize: FontSize.xs },
 });

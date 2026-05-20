@@ -10,6 +10,11 @@ export default function RootLayout() {
         <AuthProvider>
           <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="index" />
+            <Stack.Screen name="(auth)" />
+            <Stack.Screen name="(employee)" />
+            <Stack.Screen name="(manager)" />
+            <Stack.Screen name="(admin)" />
+            {/* Legacy tabs kept for compat during transition */}
             <Stack.Screen name="(tabs)" />
             <Stack.Screen name="employee-detail" />
           </Stack>
